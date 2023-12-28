@@ -9,7 +9,7 @@ const PORT = 8080;
 connect(process.env.DB_PASSWORD ?? '').then(a => {
     console.log('Connected')
 }).catch(e => {
-    console.log('Something went wrong: ', e);
+    console.log('Something went wng: ', e);
 })
 
 
