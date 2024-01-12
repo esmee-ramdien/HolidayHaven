@@ -14,7 +14,7 @@ const submit = async () => {
   const response = await signUp(userName.value, password.value, firstName.value, lastName.value);
 
   if (response === "User successfully saved.") {
-    router.push(name: 'profile');
+    router.push({ name: 'profile', params: { username: userName.value} });
   } else {
     console.log("Username taken.");
   }
@@ -22,10 +22,6 @@ const submit = async () => {
 </script>
 
 <template>
-  <div class=" absolute top-0 right-0">
-    <img src="../../assets/HHlogo.png" alt="logo" class="h-16">
-  </div>
-
   <div class="font-sans mt-80 ml-40">
     <h1 class="text-xl italic font-bold">Create a Holiday-Haven account and share your memories!</h1>
     Username: <input type="text" v-model="userName" /> <br />

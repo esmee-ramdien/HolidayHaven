@@ -12,7 +12,10 @@ export default {
       },
       fontFamily: {
         'sans': 'system-ui',
-        'serif': 'Georgia'
+        'garamond': 'Garamond'
+      },
+      boxShadow: {
+        'shadow-xl': ''
       }
     },
   },

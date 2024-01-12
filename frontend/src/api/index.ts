@@ -9,6 +9,7 @@ const axiosInstance = axios.create({
 
 export const signUp = async (username: string, password: string, firstName: string, lastName: string) => {
   try {
+
     const response = await axiosInstance.post<SignUpResponse>('user/signup', {
       username,
       password,
@@ -19,6 +20,7 @@ export const signUp = async (username: string, password: string, firstName: stri
         'Content-Type': 'application/json'
       }
     });
+
     return response.data.message;
 
   } catch (e) {

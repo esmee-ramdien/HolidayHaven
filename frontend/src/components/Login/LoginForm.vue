@@ -2,6 +2,8 @@
 import { ref } from 'vue';
 import { logIn } from '../../api';
 import { useRouter } from 'vue-router';
+import { toast } from 'vue3-toastify';
+import 'vue3-toastify/dist/index.css';
 
 const router = useRouter();
 const userName = ref("");
@@ -11,22 +13,34 @@ const submit = async () => {
   const response = await logIn(userName.value, password.value);
 
   if (response === "User found.") {
-    router.push({ name: 'profile', params: { username: userName.value} });
+    router.push({ name: 'profile', params: { username: userName.value } });
     console.log("Logged in successfully.");
   } else {
-    console.log("Could not log in.")
+    toast.error("Error!", {
+      position: "top-right",
+      timeout: 5000,
+      closeOnClick: true,
+      pauseOnFocusLoss: true,
+      pauseOnHover: true,
+      draggable: true,
+      draggablePercent: 0.6,
+      showCloseButtonOnHover: false,
+      hideProgressBar: true,
+      icon: true,
+      rtl: false
+    });
   }
+
+
 }
 </script>
 
 <template>
-  <div class=" absolute top-0 right-0">
-    <img src="../../assets/HHlogo.png" alt="logo" class="h-16">
-  </div>
-  <div class="font-sans place-content-center">
-    Username: <input type="text" v-model="userName" /> <br>
-    Password: <input type="password" v-model="password" /> <br>
-
-    <button @click="submit" class="w-32 bg-green-900 hover:bg-emerald-950 rounded">Log In</button>
+  <div class="flex justify-center items-center pr-48 h-screen">
+    <div class="border-4 border-#e11d48 p-8 rounded flex flex-col items-center ">
+      <input type="text" v-model="userName" placeholder="Username" @keyup.enter="submit" class="text-center mb-4 p-2 border rounded" />
+      <input type="password" v-model="password" placeholder="Password" @keyup.enter="submit" class="text-center mb-4 p-2 border rounded" />
+      <button @click="submit" class="w-32 bg-green-900 hover:bg-emerald-950 rounded">Log In</button>
+    </div>
   </div>
 </template>

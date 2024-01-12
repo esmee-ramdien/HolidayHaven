@@ -15,9 +15,6 @@ const goToLogin = () => {
 </script>
 
 <template>
-  <div class=" absolute top-0 right-0">
-    <img src="../../assets/HHlogo.png" alt="logo" class="h-16">
-  </div>
     <button @click="goToSignup" class="w-32 bg-green-900 hover:bg-emerald-950 rounded">Register Now!</button> <br/> <br/>
     <button @click="goToLogin" class="w-32 bg-green-900 hover:bg-emerald-950 rounded">Log In</button>
 </template>
