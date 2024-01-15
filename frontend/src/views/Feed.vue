@@ -3,6 +3,7 @@
 import { onMounted, ref } from 'vue';
 import { getUsers } from '../api';
 import { useRouter } from 'vue-router';
+
 const router = useRouter();
 
 const users = ref([{ firstName: '' }, { lastName: '' }, { username: '' }, { _id: '' }]);
@@ -12,8 +13,8 @@ onMounted(async () => {
     users.value = userData;
 });
 
-const goTo = async (username: string) => {
-    router.push({ name: 'profile', params: { username: username } });
+const goTo = async (user: string) => {
+    router.push({ name: 'profile', params: { username: user } });
 }
 
 </script>
@@ -23,7 +24,8 @@ const goTo = async (username: string) => {
     <div class="flex justify-center h-screen">
         <div>
             <div v-for="user in users" :key="user._id">
-                <p @click="goTo(user.username)" class="text-white hover:bg-violet-600"> {{ user.firstName }} {{ user.lastName }}</p>
+                <p @click="goTo(user.username)" class="text-white hover:bg-violet-600"> {{ user.firstName }} {{
+                    user.lastName }}</p>
             </div>
         </div>
     </div>

@@ -59,11 +59,13 @@ router.put('/unlike', authenticated, async (req, res) => {
 
 
 router.put('/comment', authenticated, async (req, res) => {
+    const requestedUser = await User.findById({ _id: req.user._id });
+
     const post = await Post.findByIdAndUpdate(req.body._id, {
         $push: {
             comments: {
                 text: req.body.comment,
-                postedBy: req.user._id
+                postedBy: requestedUser.username
             }
         },
     }, { new: true });

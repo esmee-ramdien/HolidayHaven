@@ -13,10 +13,7 @@ const postSchema = new Schema({
     },
     comments: [{
         text: String,
-        postedBy: {
-            type: ObjectId,
-            ref: "Users"
-        }
+        postedBy: String
     }],
     likes: [{
         type: ObjectId,

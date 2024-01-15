@@ -69,7 +69,7 @@ export const findAuthUser = async () => {
       }
     });
 
-    return response.data;
+    return response.data.username;
   } catch (e) {
     console.error(`Error fetching user: ${e}`);
   }
@@ -94,7 +94,6 @@ export const getUsers = async () => {
         userArray.push({ _id, firstName, lastName, username });
       }
 
-      console.log(userArray);
       return userArray;
     } else {
       const message = "No posts found";
