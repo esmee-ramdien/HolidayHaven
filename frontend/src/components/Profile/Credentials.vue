@@ -7,9 +7,6 @@ const router = useRouter();
 const firstName = ref("");
 const lastName = ref("");
 
-// bcryptjs - backend
-// vue toastification
-//jwt token
 onMounted(async () => {
     const { username } = router.currentRoute.value.params;
     const userData = await findUser(username);
@@ -22,6 +19,6 @@ onMounted(async () => {
 
 <template>
     <div>
-        <h1 class="text-3xl">Welcome {{ firstName }} {{ lastName }} </h1>
+        <h1 class="text-3xl">{{ firstName }} {{ lastName }} </h1>
     </div>
 </template>

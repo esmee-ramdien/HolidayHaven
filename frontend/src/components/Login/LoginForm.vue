@@ -12,18 +12,15 @@ const password = ref("");
 const submit = async () => {
   const response = await logIn(userName.value, password.value);
 
-  if (response === "User found.") {
+  if (response.message === "Logged in successfully.") {
+    localStorage.setItem('token', response.token);
     router.push({ name: 'profile', params: { username: userName.value } });
-    console.log("Logged in successfully.");
   } else {
     toast.error("Error!", {
       position: "top-right",
-      timeout: 5000,
       closeOnClick: true,
       pauseOnFocusLoss: true,
       pauseOnHover: true,
-      draggable: true,
-      draggablePercent: 0.6,
       showCloseButtonOnHover: false,
       hideProgressBar: true,
       icon: true,
@@ -38,8 +35,10 @@ const submit = async () => {
 <template>
   <div class="flex justify-center items-center pr-48 h-screen">
     <div class="border-4 border-#e11d48 p-8 rounded flex flex-col items-center ">
-      <input type="text" v-model="userName" placeholder="Username" @keyup.enter="submit" class="text-center mb-4 p-2 border rounded" />
-      <input type="password" v-model="password" placeholder="Password" @keyup.enter="submit" class="text-center mb-4 p-2 border rounded" />
+      <input type="text" v-model="userName" placeholder="Username" @keyup.enter="submit"
+        class="text-center mb-4 p-2 border rounded" />
+      <input type="password" v-model="password" placeholder="Password" @keyup.enter="submit"
+        class="text-center mb-4 p-2 border rounded" />
       <button @click="submit" class="w-32 bg-green-900 hover:bg-emerald-950 rounded">Log In</button>
     </div>
   </div>

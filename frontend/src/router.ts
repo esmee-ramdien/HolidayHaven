@@ -22,8 +22,18 @@ const router = createRouter({
     path: '/profile/:username',
     name: 'profile',
     component: () => import ('./views/Profile.vue')
+   },
+   {
+    path: '/profile/:username/post',
+    name: 'createpost',
+    component: () => import ('./views/createPost.vue')
+   },
+   {
+    path: '/feed',
+    name: 'feed',
+    component: () => import ('./views/Feed.vue')
    }
-  ]
+    ]
 });
 
 export default router;

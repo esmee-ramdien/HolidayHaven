@@ -13,7 +13,7 @@ const lastName = ref("");
 const submit = async () => {
   const response = await signUp(userName.value, password.value, firstName.value, lastName.value);
 
-  if (response === "User successfully saved.") {
+  if (response === "User registered successfully") {
     router.push({ name: 'profile', params: { username: userName.value} });
   } else {
     console.log("Username taken.");

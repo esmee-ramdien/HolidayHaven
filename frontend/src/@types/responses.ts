@@ -1,7 +1,12 @@
 export interface SignUpResponse {
-  message: String;
+  message: string;
 };
 
 export interface logInResponse {
-  message: String;
+  message: string;
+  token: string;
+}
+
+export interface PostResponse{
+  message: string;
 }

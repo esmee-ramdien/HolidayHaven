@@ -1,29 +1,31 @@
 import { Schema, model } from 'mongoose';
 
-const {ObjectId} = mongoose.Schema.Types;
+const { ObjectId } = Schema.Types;
 
 const postSchema = new Schema({
-    title:{
+    title: {
         type: String,
         required: true
     },
-    body:{
+    photo: {
         type: String,
         required: true
     },
-    photo:{
-        type: String,
-        required: true
-    },
-    comments:[{
+    comments: [{
         text: String,
-        postedBy: {type: ObjectId, ref: "Users"}
+        postedBy: {
+            type: ObjectId,
+            ref: "Users"
+        }
     }],
-    likes:[{type:ObjectId, ref: "Users"}],
-    postedBy:{
+    likes: [{
+        type: ObjectId,
+        ref: "Users"
+    }],
+    author: {
         type: ObjectId,
         ref: "Users"
     }
 });
 
-model("Posts",postSchema);
+model("Posts", postSchema);
