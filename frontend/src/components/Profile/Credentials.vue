@@ -18,7 +18,7 @@ onMounted(async () => {
 </script>
 
 <template>
-    <div>
-        <h1 class="text-3xl">{{ firstName }} {{ lastName }} </h1>
+    <div class="flex justify-center mt-12 drop-shadow-2xl">
+        <h1 class="text-5xl text-slate-300 ">{{ firstName }} {{ lastName }} </h1>
     </div>
 </template>

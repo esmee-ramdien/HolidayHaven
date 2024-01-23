@@ -21,7 +21,7 @@ export const signUp = async (username: string, password: string, firstName: stri
       }
     });
 
-    return response.data.message;
+    return response.data;
 
   } catch (e) {
     return {
@@ -39,10 +39,8 @@ export const logIn = async (username: string, password: string) => {
 
     return response.data;
   } catch (e) {
-    return {
-      message: `An error occured: ${e}`,
-      token: '',
-    };
+    console.log(`An error occured: ${e}`);
+
   }
 };
 
@@ -53,9 +51,24 @@ export const findUser = async (username: string) => {
         Authorization: localStorage.getItem('token')
       }
     });
-    console.log(username + " has been found");
 
     return response.data;
+  } catch (e) {
+    console.error(`Error fetching user: ${e}`);
+  }
+};
+
+export const findUserById = async (id: string) => {
+  try {
+    const response = await axiosInstance.post(`/user/commentAuth`, {
+      id
+    },{
+      headers: {
+        Authorization: localStorage.getItem('token')
+      }
+    });
+
+    return response.data.username;
   } catch (e) {
     console.error(`Error fetching user: ${e}`);
   }
@@ -82,9 +95,6 @@ export const getUsers = async () => {
         Authorization: localStorage.getItem('token')
       }
     });
-    console.log("Users found");
-
-
 
     const userArray = [];
 
@@ -104,12 +114,14 @@ export const getUsers = async () => {
   }
 };
 
-export const createPost = async (title: string, base64: string) => {
+export const createPost = async (title: string, base64: string, caption: string, country: string) => {
   try {
 
     const response = await axiosInstance.post<PostResponse>('/post/createpost', {
       title,
-      base64
+      base64,
+      caption,
+      country
     }, {
       headers: {
         'Content-Type': 'application/json',
@@ -129,7 +141,7 @@ export const createPost = async (title: string, base64: string) => {
 
 export const retrievePosts = async (username: string) => {
   try {
-    const response = await axiosInstance.post(`/post/retrieveposts/${username}`, {
+    const response = await axiosInstance.post(`/post/retrieveposts`, {
       username
     }, {
       headers: {
@@ -137,12 +149,11 @@ export const retrievePosts = async (username: string) => {
       }
     });
 
-
     const postsArray = [];
 
     for (const post of response.data.posts) {
-      const { _id, title, photo, likes, comments } = post;
-      postsArray.push({ _id, title, photo, likes: likes.length, comments });
+      const { _id, title, photo, likes, comments, author, caption, country } = post;
+      postsArray.push({ _id, title, photo, likes, comments, author, caption, country });
     }
 
     return postsArray;
@@ -153,69 +164,114 @@ export const retrievePosts = async (username: string) => {
   }
 }
 
-export const likePost = async (postId: string) => {
-  const response = await axiosInstance.put(`/post/like`, {
-    _id: postId
-  }, {
-    headers: {
-      Authorization: localStorage.getItem('token')
-    }
-  });
+export const getPost = async (id: string) => {
+  try {
+    const response = await axiosInstance.post(`/post/getpost`, {
+      id
+    },
+      {
+        headers: {
+          Authorization: localStorage.getItem('token')
+        }
+      });
 
-  return response.data.likes.length;
+    const { _id, title, photo, likes, comments, author, caption, country } = response.data.post;
+    return { _id, title, photo, likes, comments, author, caption, country };
+
+  } catch (e) {
+    console.error(`Error fetching posts: ${e}`);
+  }
+}
+
+export const likePost = async (postId: string) => {
+  try {
+    const response = await axiosInstance.put(`/post/like`, {
+      _id: postId
+    }, {
+      headers: {
+        Authorization: localStorage.getItem('token')
+      }
+    });
+
+    return response.data.likes;
+  } catch (e) {
+    console.error(`Error fetching posts: ${e}`);
+
+  }
 }
 
 export const unlikePost = async (postId: string) => {
-  const response = await axiosInstance.put(`/post/unlike`, {
-    _id: postId
-  }, {
-    headers: {
-      Authorization: localStorage.getItem('token')
-    }
-  });
+  try {
+    const response = await axiosInstance.put(`/post/unlike`, {
+      _id: postId
+    }, {
+      headers: {
+        Authorization: localStorage.getItem('token')
+      }
+    });
 
-  return response.data.likes.length;
+    return response.data.likes;
+  } catch (e) {
+    console.error(`Error fetching posts: ${e}`);
+
+  }
 }
 
 export const comment = async (postId: string, comment: string) => {
-  const response = await axiosInstance.put(`/post/comment`, {
-    _id: postId,
-    comment
-  }, {
-    headers: {
-      Authorization: localStorage.getItem('token')
-    }
-  });
+  try {
+    const response = await axiosInstance.put(`/post/comment`, {
+      _id: postId,
+      comment
+    }, {
+      headers: {
+        Authorization: localStorage.getItem('token')
+      }
+    });
 
-  return response.data.comments;
+    return response.data.comments;
+  } catch (e) {
+    console.error(`Error fetching posts: ${e}`);
+
+  }
 }
 
 export const delComment = async (postId: string, commentId: string) => {
-  const response = await axiosInstance.put(`/post/delcomment`, {
-    commentId: commentId,
-    postId: postId
-  }, {
-    headers: {
-      Authorization: localStorage.getItem('token')
-    }
-  });
+  try {
+    const response = await axiosInstance.put(`/post/delcomment`, {
+      commentId: commentId,
+      postId: postId
+    }, {
+      headers: {
+        Authorization: localStorage.getItem('token')
+      }
+    });
 
-  return response.data.comments;
+    return response.data.comments;
+  } catch (e) {
+    console.error(`Error fetching posts: ${e}`);
+
+  }
 }
 
 export const delPost = async (postId: string) => {
-  const response = await axiosInstance.delete(`/post/deletepost/${postId}`, {
-    headers: {
-      Authorization: localStorage.getItem('token')
+
+  try {
+    const response = await axiosInstance.delete(`/post/deletepost/${postId}`, {
+      headers: {
+        Authorization: localStorage.getItem('token')
+      }
+    });
+
+    const postsArray = [];
+
+    for (const post of response.data.posts) {
+      const { _id, title, photo, likes, comments, author } = post;
+      postsArray.push({ _id, title, photo, likes, comments, author });
     }
-  });
 
-  const postsArray = [];
+    return postsArray;
+  } catch (e) {
+    console.error(`Error fetching posts: ${e}`);
 
-  for (const post of response.data.posts) {
-    const { _id, title, photo, likes, comments } = post;
-    postsArray.push({ _id, title, photo, likes: likes.length, comments });
   }
-
-  return postsArray;
 }

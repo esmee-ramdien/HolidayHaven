@@ -10,10 +10,6 @@ export default {
       dropShadow: {
         'xl': '0 30px 30px rgba(30, 130, 76)',
       },
-      fontFamily: {
-        'sans': 'system-ui',
-        'garamond': 'Garamond'
-      },
       boxShadow: {
         'shadow-xl': ''
       }

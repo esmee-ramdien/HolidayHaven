@@ -11,10 +11,21 @@ router.get('/profile/:username', authenticated, async (req, res) => {
     const user = await User.findOne({ username: req.params.username });
 
     if (user) {
-        console.log(`${user.username} found`);
-        res.json({ firstName: user.firstName, lastName: user.lastName });
+        res.send({ firstName: user.firstName, lastName: user.lastName });
     } else {
         console.log('Profile not found');
+    }
+
+});
+
+router.post('/commentAuth', authenticated, async (req, res) => {
+
+    const user = await User.findOne({ _id: req.body.id });
+
+    if (user) {
+        res.send({ username: user.username});
+    } else {
+        res.send({message: "User not allowed to delete comment."})
     }
 
 });
@@ -24,14 +35,17 @@ router.get('/profiles', authenticated, async (req, res) => {
 
     const users = await User.find({ _id: { $ne: loggedInUserId } }).select("-password");
 
-    res.json({ users });
+    res.send({ users });
 
 });
 
 router.get('/loggedIn', authenticated, async (req, res) => {
     const user = await User.findById({ _id: req.user._id });
-
-    res.json({ username: user.username });
+    
+    if(!authenticated){
+        console.log("not auth")
+    }
+    res.send({ _id: user._id, username: user.username });
 })
 
 export default router;

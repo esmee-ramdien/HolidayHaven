@@ -20,13 +20,14 @@ const goTo = async (user: string) => {
 </script>
 
 <template>
-    <p class="text-3xl">Holiday-Haven Users</p>
-    <div class="flex justify-center h-screen">
-        <div>
-            <div v-for="user in users" :key="user._id">
-                <p @click="goTo(user.username)" class="text-white hover:bg-violet-600"> {{ user.firstName }} {{
-                    user.lastName }}</p>
-            </div>
-        </div>
+    <div class="p-32">
+        <v-card>
+            <v-list bg-color="blue-grey-lighten-4">
+                <v-list-item v-for="(item, i) in users" :key="i" :value="item._id" variant="plain"
+                    @click="goTo(item.username ?? '')" prepend-icon="mdi-account">
+                    <v-list-item-title v-text="`${item.firstName} ${item.lastName}`"></v-list-item-title>
+                </v-list-item>
+            </v-list>
+        </v-card>
     </div>
 </template>

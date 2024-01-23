@@ -1,104 +1,55 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue';
-import { retrievePosts, likePost, unlikePost, comment, findUser, delComment, delPost } from '../../api';
+import { retrievePosts } from '../../api';
 import { useRouter } from 'vue-router';
 
-const posts = ref([{ _id: '' }, { title: '' }, { photo: '' }, { likes: '' }, { comments: [] }])
+const posts = ref([{ _id: '' }, { title: '' }, { photo: '' }, { likes: [] }, { comments: [] }, { author: '' }, { caption: '' }, { country: '' }])
 const router = useRouter();
-
-const userComment = ref("");
 
 onMounted(async () => {
     const { username } = router.currentRoute.value.params;
-    const userData = await retrievePosts(username);
-    posts.value = userData;
+    const userPosts = await retrievePosts(username);
+
+    posts.value = userPosts;
 });
 
-const like = async (postId: string, postidx: number) => {
-    try {
-        const updatedLikes = await likePost(postId);
-        posts.value[postidx].likes = updatedLikes;
+const gotoPost = async (postIndex: number) => {
+    const post_id = posts.value[postIndex]._id
+    router.push({
+        name: 'singlepost',
+        params: {
+            username: router.currentRoute.value.params.username,
+            id: post_id
+        }
+    });
 
-    } catch (error) {
-        console.error('Error liking post:', error);
-    }
-};
-
-const unlike = async (postId: string, postidx: number) => {
-    try {
-        const updatedLikes = await unlikePost(postId);
-        posts.value[postidx].likes = updatedLikes;
-
-    } catch (error) {
-        console.error('Error unliking post:', error);
-    }
-};
-
-const placeComment = async (postId: string, commentIn: string, postidx: number) => {
-    const updatedComments = await comment(postId, commentIn);
-    posts.value[postidx].comments = updatedComments;
-}
-
-const deleteComment = async (postId: string, commentId: string, postidx: number) => {
-    const updatedComments = await delComment(postId, commentId);
-    posts.value[postidx].comments = updatedComments;
-}
-
-const deletePost = async (postId: string) => {
-    const updatedPosts = await delPost(postId);
-    posts.value = updatedPosts;
 }
 </script>
 
 <template>
-    <div class="flex justify-center items-center h-screen">
-      <div>
-        <div v-for="(post, index) in posts" :key="post._id" class="mb-8 p-6 border border-gray-300 rounded-lg shadow-md">
-          <h3 class="text-xl font-semibold mb-4">{{ post.title }}</h3>
-  
-          <div v-if="post.photo">
-            <img :src="post.photo" alt="Post Image" class="w-24 mb-4">
-          </div>
-          <p v-else class="mb-4">No photo available</p>
-  
-          <p class="mb-4">Likes: {{ post.likes }}</p>
+    <div class="flex justify-center mt-10">
+        <div v-if="posts.length > 0" class="flex justify-center flex-wrap gap-2">
 
-          <div v-for="comment in post.comments" :key="comment._id" class="flex flex-row items-center space-x-4 mb-2">
-            <p class="text-sm">{{ comment.text }} - {{ comment.postedBy }}</p>
-            <button @click="deleteComment(post._id, comment._id, index)" class="delete-btn">Delete</button>
-          </div>
-  
-          <div class="flex space-x-4 mb-4">
-            <button @click="like(post._id, index)" class="like-btn">Like</button>
-            <button @click="unlike(post._id, index)" class="unlike-btn">Unlike</button>
-          </div>
-  
-          <div class="flex space-x-4">
-            <input v-model="userComment" placeholder="Wauw!" @keyup.enter="placeComment(post._id, userComment, index)" class="comment-input">
-            <button @click="placeComment(post._id, userComment, index)" class="post-btn">Post</button>
-          </div>
-  
-          <button @click="deletePost(post._id)" class="delete-btn">Delete post</button>
+            <div v-for="(post, index) in posts" :key="post._id" class="mb-10 w-64">
+                <v-card @click="gotoPost(index)" height="20em" color="blue-grey-lighten-4">
+                    <div class="p-6">
+                        <v-card-title>
+                            <h3 class="text-2xl font-semibold flex justify-center">{{ post.title }}</h3>
+                        </v-card-title>
+
+                        <div class="flex justify-center">
+                            <img :src="post.photo" alt="Post Image" class="w-[900px] mb-4">
+                        </div>
+
+                    </div>
+                </v-card>
+
+            </div>
         </div>
-      </div>
+        <div v-else class="flex flex-col justify-center items-center text-slate-300">
+            No posts
+            <v-icon size="x-large">mdi-camera</v-icon>
+        </div>
     </div>
-  </template>
-  
-  <style scoped>
-  .like-btn,
-  .unlike-btn,
-  .post-btn {
-    @apply text-white font-medium rounded-lg text-sm px-5 py-2.5  hover:text-black;
-    @apply bg-gradient-to-r from-pink-400 via-pink-500 to-pink-600 hover:bg-gradient-to-br focus:ring-pink-300;
-  }
-  
-  .delete-btn {
-    @apply text-white font-medium rounded-lg text-sm px-4 py-2.5 hover:text-black;
-    @apply bg-gradient-to-r from-red-500 via-red-600 to-red-700 hover:bg-gradient-to-br;
-  }
-  bg-gradient-to-r from-red-200 to-red-600
-  .comment-input {
-    @apply p-2 border border-gray-300 rounded focus:outline-none focus:ring-2;
-  }
-  </style>
+</template>
   

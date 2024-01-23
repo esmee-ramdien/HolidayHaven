@@ -2,7 +2,18 @@ import { createRouter, createWebHistory } from 'vue-router';
 
 const router = createRouter({
   history: createWebHistory(),
+  // scrollBehavior(to, from, savedPosition) {
+  //   if (savedPosition) {
+  //     return savedPosition
+  //   } else {
+  //     return { top: 0 }
+  //   }
+  // },
   routes: [
+    {
+      path: '/',
+      redirect: '/home'
+    },
     {
       path: '/home',
       name: 'home',
@@ -24,7 +35,7 @@ const router = createRouter({
       component: () => import('./views/Profile.vue')
     },
     {
-      path: '/profile/:username/post',
+      path: '/profile/:username/createpost',
       name: 'createpost',
       component: () => import('./views/createPost.vue')
     },
@@ -32,6 +43,11 @@ const router = createRouter({
       path: '/feed',
       name: 'feed',
       component: () => import('./views/Feed.vue')
+    },
+    {
+      path: '/profile/:username/post/:id',
+      name: 'singlepost',
+      component: () => import('./views/SinglePost.vue')
     }
   ]
 });

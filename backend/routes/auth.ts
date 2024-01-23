@@ -7,23 +7,24 @@ const User = model('Users');
 const router = express.Router();
 
 router.post('/signup', async (req, res) => {
-    try {
-        const { username, password, firstName, lastName } = req.body;
-        const hashedPassword = await bcrypt.hash(password, 10);
+    const { username, password, firstName, lastName } = req.body;
+    const hashedPassword = await bcrypt.hash(password, 10);
+    const existingUser = await User.findOne({ username });
 
-        const user = new User({
-            username,
-            firstName,
-            lastName,
-            password: hashedPassword
-        });
-        await user.save();
-
-        res.status(201).json({ message: 'User registered successfully' });
-    } catch (error) {
-        res.status(500).json({ error: 'Registration failed' });
+    if (existingUser) {
+        return res.send({ message: 'Username already exists.', stat: 409 });
     }
 
+    const user = new User({
+        username,
+        firstName,
+        lastName,
+        password: hashedPassword
+    });
+
+    await user.save();
+
+    res.send({ message: 'User registered successfully', stat: 201 });
 });
 
 router.post('/login', async (req, res) => {
@@ -32,25 +33,23 @@ router.post('/login', async (req, res) => {
         const user = await User.findOne({ username });
 
         if (!user) {
-            return res.status(401).json({ error: 'Authentication failed1' });
-
+            return res.send({ message: "Username not found.", stat: 404 });
         }
 
         const passwordMatch = await bcrypt.compare(password, user.password);
 
         if (!passwordMatch) {
-            return res.status(401).json({ error: 'Authentication failed' });
+            return res.send({ message: 'Incorrect password.', stat: 401 });
         }
 
         const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET ?? '', {
-            expiresIn: '2h',
+            expiresIn: '2h'
         });
-        res.status(200).json({ token, message: "Logged in successfully." });
+
+        res.send({ token, message: "Logged in successfully.", stat: 200 });
     } catch (error) {
-        res.status(500).json({ error: 'Login failed' });
+        res.send({ error: 'Login failed due to server error.' });
     }
-
-
 });
 
 export default router;

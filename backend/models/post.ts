@@ -11,6 +11,9 @@ const postSchema = new Schema({
         type: String,
         required: true
     },
+    caption: {
+        type: String,
+    },
     comments: [{
         text: String,
         postedBy: String
@@ -22,6 +25,10 @@ const postSchema = new Schema({
     author: {
         type: ObjectId,
         ref: "Users"
+    },
+    country: {
+        type: String,
+        required: true
     }
 });
 
