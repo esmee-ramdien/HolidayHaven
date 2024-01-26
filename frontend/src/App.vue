@@ -1,40 +1,36 @@
 <script setup lang="ts">
 import { useRouter } from 'vue-router';
-import { findAuthUser } from './api';
-import { onMounted, ref } from 'vue';
+import { ref } from 'vue';
+import { useUserStore } from './store/user'
 
+const userStore = useUserStore();
 const router = useRouter();
-const isAuthenticated = ref(false);
 const showSearchBar = ref(false);
 const searchQuery = ref('');
 
-onMounted(async () => {
-  const reqUser = await findAuthUser();
-  if (reqUser) {
-    isAuthenticated.value = true;
-  } else {
-    router.push({ name: 'home' })
-    isAuthenticated.value = false;
-  }
-})
-
 const gotoProfile = async () => {
-  const reqUser = await findAuthUser();
-
-  if (reqUser) {
-    router.push({ name: 'profile', params: { username: reqUser } });
+  if (userStore.isAuthenticated) {
+    router.push({ name: 'profile', params: { username: userStore.authenticatedUser } });
   } else {
+    // userStore.setAuthentication(false);
     router.push({ name: 'home' });
   }
 }
 
 const goToFeed = async () => {
-  router.push({ name: 'feed' });
+  if (userStore.isAuthenticated) {
+    router.push({ name: 'feed' });
+  } else {
+    router.push({ name: 'home' });
+  }
 }
 
 const goToCreatePost = async () => {
-  const reqUser = await findAuthUser();
-  router.push({ name: 'createpost', params: { username: reqUser } });
+  if (userStore.isAuthenticated) {
+    router.push({ name: 'createpost', params: { username: userStore.authenticatedUser } });
+  } else {
+    router.push({ name: 'home' });
+  }
 }
 
 const toggleSearch = async () => {
@@ -53,7 +49,7 @@ const toggleSearch = async () => {
           </v-icon>
         </v-app-bar-title>
 
-        <v-btn v-if="isAuthenticated" @click="toggleSearch" color="light-green-darken-1">
+        <v-btn v-if="userStore.isAuthenticated" @click="toggleSearch" color="light-green-darken-1">
           <v-icon>mdi-magnify</v-icon>
           <v-tooltip v-if="!showSearchBar" activator="parent" location="start">Open search bar</v-tooltip>
           <v-tooltip v-else activator="parent" location="start">Collapse search bar</v-tooltip>
@@ -61,8 +57,8 @@ const toggleSearch = async () => {
 
         <v-text-field v-if="showSearchBar" v-model="searchQuery" label="Search users or countries"></v-text-field>
 
-        <v-btn v-if="isAuthenticated" @click="goToFeed" color="light-green-darken-1">Go to Feed</v-btn>
-        <v-btn v-if="isAuthenticated" @click="goToCreatePost" color="light-green-darken-1">Create Post</v-btn>
+        <v-btn v-if="userStore.isAuthenticated" @click="goToFeed" color="light-green-darken-1">Go to Feed</v-btn>
+        <v-btn v-if="userStore.isAuthenticated" @click="goToCreatePost" color="light-green-darken-1">Create Post</v-btn>
       </v-app-bar>
 
       <v-main class="bg-cyan-950" scrollable>

@@ -1,5 +1,5 @@
 import { model } from 'mongoose';
-import jwt, { JwtPayload } from 'jsonwebtoken';
+import jwt, { JsonWebTokenError, JwtPayload, TokenExpiredError } from 'jsonwebtoken';
 import { Request, Response, NextFunction } from 'express';
 
 const User = model("Users");
@@ -8,7 +8,7 @@ const verifyToken = async (req: Request, res: Response, next: NextFunction) => {
     const token = req.header('Authorization');
 
     if (!token) {
-        return res.status(401).json({ error: `Access denied ${token}` });
+        return res.status(401).json({ eMessage: `Access denied.` });
     }
 
     try {
@@ -16,13 +16,19 @@ const verifyToken = async (req: Request, res: Response, next: NextFunction) => {
         const user = await User.findById(decoded.userId);
 
         if (!user) {
-            return res.status(401).json({ error: 'User not authenticated' });
+            return res.status(401).json({ eMessage: 'User not authenticated.' });
         } else {
             req.user = user;
             return next();
         }
+
+        JsonWebTokenError
     } catch (error) {
-        res.status(401).json({ error: 'Invalid token' });
+        if (error instanceof TokenExpiredError) {
+            return res.status(404).json({ eMessage: 'Token expired.' });
+        } else {
+            return res.status(500).json({ eMessage: 'Invalid token.' });
+        }
     }
 };
 

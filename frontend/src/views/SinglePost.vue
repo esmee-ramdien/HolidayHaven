@@ -28,6 +28,7 @@ const toastOptions = {
     icon: true,
     rtl: false,
 };
+
 const parseJwt = (token: string) => {
     try {
         return JSON.parse(atob(token.split('.')[1]));

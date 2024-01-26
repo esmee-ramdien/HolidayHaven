@@ -4,7 +4,9 @@ import { useRouter } from 'vue-router';
 import { toast } from 'vue3-toastify';
 import 'vue3-toastify/dist/index.css';
 import { logIn } from '../../api';
+import {useUserStore} from '../../store/user'
 
+const userStore = useUserStore();
 const router = useRouter();
 const userName = ref("");
 const password = ref("");
@@ -25,15 +27,13 @@ const submit = async () => {
 
   if (response.stat === 200) {
     localStorage.setItem('token', response.token);
-    toast.success("Successfully logged in.", toastOptions)
+    userStore.setUserAuthentication(userName.value);
     router.push({ name: 'profile', params: { username: userName.value } });
   } else if (response.stat === 404) {
     toast.error("Error 404 - Username not found.", toastOptions);
   } else {
     toast.error("Error 401 - Password invalid.", toastOptions);
   }
-
-
 }
 </script>
 

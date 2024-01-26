@@ -4,7 +4,9 @@ import { logIn, signUp } from '../../api';
 import { useRouter } from 'vue-router';
 import { toast } from 'vue3-toastify';
 import 'vue3-toastify/dist/index.css';
+import {useUserStore} from '../../store/user'
 
+const userStore = useUserStore();
 const router = useRouter();
 const userName = ref("");
 const password = ref("");
@@ -29,9 +31,9 @@ const submit = async () => {
   const response = await signUp(userName.value, password.value, firstName.value, lastName.value);
 
   if (response.stat === 201) {
-    toast.success("Account successfully created.",toastOptions );
     const response = await logIn(userName.value, password.value);
     localStorage.setItem('token', response.token);
+    userStore.setUserAuthentication(userName.value);
     router.push({ name: 'profile', params: { username: userName.value } });
   } else {
     toast.error("Error 409 - Username already taken.", toastOptions);

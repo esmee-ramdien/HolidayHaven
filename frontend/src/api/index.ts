@@ -53,8 +53,13 @@ export const findUser = async (username: string) => {
     });
 
     return response.data;
-  } catch (e) {
-    console.error(`Error fetching user: ${e}`);
+  } catch (e: any) {
+    if (e.response.status === 404) {
+      localStorage.removeItem("token");
+      console.log(e.response.data.eMessage)
+    } else {
+      console.error(`Error fetching user: ${e}`);
+    }
   }
 };
 
@@ -62,29 +67,21 @@ export const findUserById = async (id: string) => {
   try {
     const response = await axiosInstance.post(`/user/commentAuth`, {
       id
-    },{
+    }, {
       headers: {
         Authorization: localStorage.getItem('token')
       }
     });
 
-    return response.data.username;
-  } catch (e) {
-    console.error(`Error fetching user: ${e}`);
-  }
-};
-
-export const findAuthUser = async () => {
-  try {
-    const response = await axiosInstance.get(`/user/loggedIn`, {
-      headers: {
-        Authorization: localStorage.getItem('token')
-      }
-    });
 
     return response.data.username;
-  } catch (e) {
-    console.error(`Error fetching user: ${e}`);
+  } catch (e: any) {
+    if (e.response.status === 404) {
+      localStorage.removeItem("token");
+      console.log(e.response.data.eMessage)
+    } else {
+      console.error(`Error fetching user: ${e}`);
+    }
   }
 };
 
@@ -109,8 +106,13 @@ export const getUsers = async () => {
       const message = "No posts found";
       return message;
     }
-  } catch (e) {
-    console.error(`Error fetching users: ${e}`);
+  } catch (e: any) {
+    if (e.response.status === 404) {
+      localStorage.removeItem("token");
+      console.log(e.response.data.eMessage)
+    } else {
+      console.error(`Error fetching users: ${e}`);
+    }
   }
 };
 
@@ -132,10 +134,13 @@ export const createPost = async (title: string, base64: string, caption: string,
 
     return response.data.message;
 
-  } catch (e) {
-    return {
-      message: `An error occured: ${e}`
-    };
+  } catch (e: any) {
+    if (e.response.status === 404) {
+      localStorage.removeItem("token");
+      console.log(e.response.data.eMessage)
+    } else {
+      console.error(`Error creating post: ${e}`);
+    }
   }
 };
 
@@ -159,8 +164,13 @@ export const retrievePosts = async (username: string) => {
     return postsArray;
 
 
-  } catch (e) {
-    console.error(`Error fetching posts: ${e}`);
+  } catch (e: any) {
+    if (e.response.status === 404) {
+      localStorage.removeItem("token");
+      console.log(e.response.data.eMessage)
+    } else {
+      console.error(`Error fetching posts: ${e}`);
+    }
   }
 }
 
@@ -178,8 +188,13 @@ export const getPost = async (id: string) => {
     const { _id, title, photo, likes, comments, author, caption, country } = response.data.post;
     return { _id, title, photo, likes, comments, author, caption, country };
 
-  } catch (e) {
-    console.error(`Error fetching posts: ${e}`);
+  } catch (e: any) {
+    if (e.response.status === 404) {
+      localStorage.removeItem("token");
+      console.log(e.response.data.eMessage)
+    } else {
+      console.error(`Error fetching post: ${e}`);
+    }
   }
 }
 
@@ -194,9 +209,13 @@ export const likePost = async (postId: string) => {
     });
 
     return response.data.likes;
-  } catch (e) {
-    console.error(`Error fetching posts: ${e}`);
-
+  } catch (e: any) {
+    if (e.response.status === 404) {
+      localStorage.removeItem("token");
+      console.log(e.response.data.eMessage)
+    } else {
+      console.error(`Error liking post: ${e}`);
+    }
   }
 }
 
@@ -211,9 +230,13 @@ export const unlikePost = async (postId: string) => {
     });
 
     return response.data.likes;
-  } catch (e) {
-    console.error(`Error fetching posts: ${e}`);
-
+  } catch (e: any) {
+    if (e.response.status === 404) {
+      localStorage.removeItem("token");
+      console.log(e.response.data.eMessage)
+    } else {
+      console.error(`Error unliking post: ${e}`);
+    }
   }
 }
 
@@ -229,9 +252,13 @@ export const comment = async (postId: string, comment: string) => {
     });
 
     return response.data.comments;
-  } catch (e) {
-    console.error(`Error fetching posts: ${e}`);
-
+  } catch (e: any) {
+    if (e.response.status === 404) {
+      localStorage.removeItem("token");
+      console.log(e.response.data.eMessage)
+    } else {
+      console.error(`Error placing comment: ${e}`);
+    }
   }
 }
 
@@ -247,9 +274,13 @@ export const delComment = async (postId: string, commentId: string) => {
     });
 
     return response.data.comments;
-  } catch (e) {
-    console.error(`Error fetching posts: ${e}`);
-
+  } catch (e: any) {
+    if (e.response.status === 404) {
+      localStorage.removeItem("token");
+      console.log(e.response.data.eMessage)
+    } else {
+      console.error(`Error deleting comment: ${e}`);
+    }
   }
 }
 
@@ -270,8 +301,12 @@ export const delPost = async (postId: string) => {
     }
 
     return postsArray;
-  } catch (e) {
-    console.error(`Error fetching posts: ${e}`);
-
+  } catch (e: any) {
+    if (e.response.status === 404) {
+      localStorage.removeItem("token");
+      console.log(e.response.data.eMessage)
+    } else {
+      console.error(`Error deleting post: ${e}`);
+    }
   }
 }
