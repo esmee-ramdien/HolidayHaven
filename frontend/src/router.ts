@@ -65,6 +65,8 @@ router.beforeEach(async (to, from, next) => {
 
   userStore.setAuthentication(isAuthenticated);
 
+  console.log(isAuthenticated)
+
   if (!isAuthenticated && !nonAuthRouteNames.includes(to.name?.toString() || '')) {
     return next({ name: 'home' });
   }
